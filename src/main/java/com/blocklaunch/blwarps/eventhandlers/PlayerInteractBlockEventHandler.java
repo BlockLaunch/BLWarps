@@ -58,7 +58,7 @@ public class PlayerInteractBlockEventHandler {
         // Don't need to validate that the warp actually exists --> Command
         // executor will take care
         // of it. (along with permissions)
-        String command = "warp " + Texts.toPlain(lines.get(2));
+        String command = "warp '" + Texts.toPlain(lines.get(2)) + "'";
         this.plugin.getGame().getCommandDispatcher().process(event.getUser(), command);
 
     }
