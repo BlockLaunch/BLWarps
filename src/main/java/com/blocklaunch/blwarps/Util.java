@@ -20,23 +20,23 @@ public class Util {
     }
 
     public static Text generateWarpText(Warp warp) {
-        return Texts.builder(warp.getName()).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp " + warp.getName()))
+        return Texts.builder(warp.getName()).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp '" + warp.getName() + "'"))
                 .onHover(TextActions.showText(Texts.of("Warp to ", TextColors.GOLD, warp.getName()))).build();
 
     }
 
     public static Text generateWarpGroupInfoText(String groupName) {
-        return Texts.builder(groupName).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp group info " + groupName))
+        return Texts.builder(groupName).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp group info '" + groupName + "'"))
                 .onHover(TextActions.showText(Texts.of("Show ", TextColors.GOLD, groupName, TextColors.WHITE, " info."))).build();
     }
 
     public static Text generateWarpRegionInfoText(WarpRegion region) {
-        return Texts.builder(region.getName()).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp region info " + region.getName()))
+        return Texts.builder(region.getName()).color(TextColors.GOLD).onClick(TextActions.runCommand("/warp region info '" + region.getName() + "'"))
                 .onHover(TextActions.showText(Texts.of("Show ", TextColors.GOLD, region.getName(), TextColors.WHITE, " info."))).build();
     }
 
     public boolean hasPermission(CommandSource source, Warp warp) {
-        String warpPermission = "blwarps.warp." + warp.getName();
+        String warpPermission = "blwarps.warp." + warp.getName().replace(" ", "-");
         String groupPermissionBase = "blwarps.warp.group.";
         String wildCardPermission = "blwarps.warp.*";
 
@@ -49,7 +49,7 @@ public class Util {
 
         // Check permission for warp groups
         for (String groupName : warp.getGroups()) {
-            String permission = groupPermissionBase + groupName;
+            String permission = groupPermissionBase + groupName.replace(" ", "-");
             if (source.hasPermission(permission)) {
                 playerIsValid = true;
             }
