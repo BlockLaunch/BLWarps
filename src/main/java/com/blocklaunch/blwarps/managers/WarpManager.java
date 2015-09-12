@@ -7,7 +7,8 @@ import com.blocklaunch.blwarps.Warp;
 import com.blocklaunch.blwarps.managers.storage.StorageManager;
 import com.blocklaunch.blwarps.runnables.WarpPlayerRunnable;
 import com.google.common.base.Optional;
-import org.spongepowered.api.entity.player.Player;
+
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;

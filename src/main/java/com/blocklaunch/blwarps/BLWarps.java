@@ -16,14 +16,16 @@ import com.blocklaunch.blwarps.managers.storage.sql.warp.SqlWarpManager;
 import com.blocklaunch.blwarps.managers.storage.sql.warpregion.SqlWarpRegionManager;
 import com.blocklaunch.blwarps.region.WarpRegion;
 import com.google.inject.Inject;
+
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.service.event.EventManager;
@@ -51,8 +53,8 @@ public class BLWarps {
 
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
-    @Subscribe
-    public void preInit(PreInitializationEvent event) {
+    @Listener
+    public void preInit(GamePreInitializationEvent event) {
         setupConfig();
         setupManagers();
         registerCommands();
@@ -166,16 +168,16 @@ public class BLWarps {
     private void registerEventHandlers() {
         EventManager eventManager = this.game.getEventManager();
         // Filter chat & replace warp names in chat w/ clickable links
-        eventManager.register(this, new PlayerChatEventHandler(this));
+        eventManager.registerListeners(this, new PlayerChatEventHandler(this));
         // Watch for players right-clicking warp signs
-        eventManager.register(this, new PlayerInteractBlockEventHandler(this));
+        eventManager.registerListeners(this, new PlayerInteractBlockEventHandler(this));
         // Watch for warp signs being created
-        eventManager.register(this, new SignChangeEventHandler(this));
+        eventManager.registerListeners(this, new SignChangeEventHandler(this));
         // Watch for player movement (warp regions, cancelling warps)
-        eventManager.register(this, new PlayerMoveEventHandler(this));
+        eventManager.registerListeners(this, new PlayerMoveEventHandler(this));
         // Watch for player damage - cancel warp if pvp-protect setting is
         // enabled
-        eventManager.register(this, new PlayerChangeHealthEventHandler(this));
+        eventManager.registerListeners(this, new PlayerChangeHealthEventHandler(this));
     }
 
     public Logger getLogger() {

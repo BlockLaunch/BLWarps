@@ -1,9 +1,10 @@
 package com.blocklaunch.blwarps.runnables;
 
+import org.spongepowered.api.entity.living.player.Player;
+
 import com.blocklaunch.blwarps.BLWarps;
 import com.blocklaunch.blwarps.Constants;
 import com.blocklaunch.blwarps.Warp;
-import org.spongepowered.api.entity.player.Player;
 
 public class WarpPlayerRunnable implements Runnable {
 

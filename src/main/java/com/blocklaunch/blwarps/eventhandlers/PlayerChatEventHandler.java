@@ -4,8 +4,10 @@ import com.blocklaunch.blwarps.BLWarps;
 import com.blocklaunch.blwarps.Util;
 import com.blocklaunch.blwarps.Warp;
 import com.google.common.base.Optional;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerChatEvent;
+
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.command.MessageSinkEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
@@ -26,11 +28,12 @@ public class PlayerChatEventHandler {
 
     private static final String SPACE = " ";
 
-    @Subscribe
-    public void playerChatEvent(PlayerChatEvent event) {
+    @Listener
+    public void playerChatEvent(MessageSinkEvent event) {
         Text originalMessage = event.getMessage();
         String originalMessagePlain = Texts.toPlain(originalMessage);
         String[] originalMessageWords = originalMessagePlain.split(SPACE);
+        Optional<Player> playerOptional = event.getCause().first(Player.class);
 
         for (String word : originalMessageWords) {
             if (this.plugin.getWarpManager().getNames().contains(word.toLowerCase())) {
@@ -40,7 +43,11 @@ public class PlayerChatEventHandler {
                 }
 
                 Warp warp = optWarp.get();
-                CommandSource source = event.getSource();
+                if (!playerOptional.isPresent()) {
+                    continue;
+                }
+
+                CommandSource source = playerOptional.get();
                 if (!this.plugin.getUtil().hasPermission(source, warp)) {
                     continue;
                 }

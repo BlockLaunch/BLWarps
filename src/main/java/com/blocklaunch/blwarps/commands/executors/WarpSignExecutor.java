@@ -4,7 +4,8 @@ import com.blocklaunch.blwarps.BLWarps;
 import com.blocklaunch.blwarps.Constants;
 import com.blocklaunch.blwarps.Warp;
 import com.google.common.base.Optional;
-import org.spongepowered.api.entity.player.Player;
+
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.command.CommandException;

@@ -4,14 +4,14 @@ import com.blocklaunch.blwarps.BLWarps;
 import com.blocklaunch.blwarps.Warp;
 import com.blocklaunch.blwarps.exceptions.MultipleWarpRegionsException;
 import com.blocklaunch.blwarps.region.WarpRegion;
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
+
 import org.khelekore.prtree.MBR;
 import org.khelekore.prtree.SimpleMBR;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
-import org.spongepowered.api.world.Location;
-
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +23,15 @@ public class PlayerMoveEventHandler {
         this.plugin = plugin;
     }
 
-    @Subscribe
-    public void playerMove(PlayerMoveEvent event) throws Exception {
-        if (event.getOldLocation().equals(event.getNewLocation())) {
+    @Listener
+    public void playerMove(DisplaceEntityEvent.TargetPlayer event) throws Exception {
+        if (event.getFromTransform().equals(event.getToTransform())) {
             // Don't do anything if a player just looks around, but doesn't move
             return;
         }
 
-        Player player = event.getEntity();
-        Location location = event.getNewLocation();
+        Player player = event.getTargetEntity();
+        Vector3d location = event.getToTransform().getPosition();
 
         // If pvp-protect config setting is on, cancel the warp
         if (this.plugin.getConfig().isPvpProtect()) {
@@ -79,8 +79,8 @@ public class PlayerMoveEventHandler {
 
     }
 
-    private List<WarpRegion> getContainingRegions(Location location) {
-        MBR locationMBR = new SimpleMBR(location.getX(), location.getX(), location.getY(), location.getY(), location.getZ(), location.getZ());
+    private List<WarpRegion> getContainingRegions(Vector3d location) {
+        MBR locationMBR = new SimpleMBR(location. getX(), location.getX(), location.getY(), location.getY(), location.getZ(), location.getZ());
         List<WarpRegion> warpRegions = new ArrayList<WarpRegion>();
 
         // Find intersecting regions & store in list

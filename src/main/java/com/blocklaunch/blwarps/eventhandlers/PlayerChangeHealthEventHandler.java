@@ -1,8 +1,11 @@
 package com.blocklaunch.blwarps.eventhandlers;
 
 import com.blocklaunch.blwarps.BLWarps;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerChangeHealthEvent;
+import com.google.common.base.Optional;
+
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.entity.HealEntityEvent;
 
 public class PlayerChangeHealthEventHandler {
 
@@ -12,18 +15,20 @@ public class PlayerChangeHealthEventHandler {
         this.plugin = plugin;
     }
 
-    @Subscribe
-    public void playerChangeHealth(PlayerChangeHealthEvent event) {
+    @Listener
+    public void playerChangeHealth(HealEntityEvent event) {
         if (this.plugin.getConfig().isPvpProtect()) {
-            // pvp-protect setting is enabled
-            if (this.plugin.getWarpManager().isWarping(event.getEntity())) {
-                // Player is warping
-                if (event.getNewData().health().get() < event.getOldData().health().get()) {
-                    // Player was damaged
-                    this.plugin.getWarpManager().cancelWarp(event.getEntity());
+            Optional<Player> player = event.getCause().first(Player.class);
+            if (player.isPresent()) {
+             // pvp-protect setting is enabled
+                if (this.plugin.getWarpManager().isWarping(player.get())) {
+                    // Player is warping
+                    if (event.getFinalHealAmount() < event.getOriginalHealAmount()) {
+                        // Player was damaged
+                        this.plugin.getWarpManager().cancelWarp(player.get());
+                    }
                 }
             }
-
         }
     }
 }

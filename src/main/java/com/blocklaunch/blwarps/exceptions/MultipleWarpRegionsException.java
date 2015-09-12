@@ -1,10 +1,12 @@
 package com.blocklaunch.blwarps.exceptions;
 
-import org.spongepowered.api.world.Location;
+import com.flowpowered.math.vector.Vector3d;
 
 public class MultipleWarpRegionsException extends Exception {
 
-    public MultipleWarpRegionsException(Location location) {
+    private static final long serialVersionUID = 1L;
+
+    public MultipleWarpRegionsException(Vector3d location) {
         super("Multiple warp regions were found at: " + location.toString());
     }
 }

@@ -4,15 +4,18 @@ import org.spongepowered.api.world.World;
 
 import com.blocklaunch.blwarps.BLWarps;
 import com.google.common.base.Optional;
+
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.TileEntityTypes;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.data.value.mutable.ListValue;
-import org.spongepowered.api.entity.EntityInteractionTypes;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
 /**
@@ -26,26 +29,28 @@ public class PlayerInteractBlockEventHandler {
         this.plugin = plugin;
     }
 
-    @Subscribe
-    public void playerInteractBlock(PlayerInteractBlockEvent event) {
-        // Ensure right click
-        if (!(event.getInteractionType() == EntityInteractionTypes.USE)) {
+    @Listener
+    public void playerInteractBlock(InteractBlockEvent.Use event) {
+        BlockSnapshot blockSnapshot = event.getTargetBlock();
+        Optional<Location<World>> block = blockSnapshot.getLocation();
+        Optional<Player> player = event.getCause().first(Player.class);
+
+        // Ensure the player used a block
+        if (!player.isPresent()) {
             return;
         }
-
-        Location<World> block = event.getLocation();
 
         // Ensure the block is a tile entity
-        if (!block.getTileEntity().isPresent()) {
-            return;
-        }
-        
-        // Ensure the tile entity is a sign
-        if (!(block.getTileEntity().get().getType() == TileEntityTypes.SIGN)) {
+        if (!block.get().getTileEntity().isPresent()) {
             return;
         }
 
-        TileEntity signEntity = block.getTileEntity().get();
+        // Ensure the tile entity is a sign
+        if (!(block.get().getTileEntity().get().getType() == TileEntityTypes.SIGN)) {
+            return;
+        }
+
+        TileEntity signEntity = block.get().getTileEntity().get();
         // Get the SignData
         Optional<SignData> signData = signEntity.getOrCreate(SignData.class);
         // Ensure the sign actually has text on it
@@ -61,7 +66,7 @@ public class PlayerInteractBlockEventHandler {
         // executor will take care
         // of it. (along with permissions)
         String command = "warp " + Texts.toPlain(lines.get(2));
-        this.plugin.getGame().getCommandDispatcher().process(event.getUser(), command);
+        this.plugin.getGame().getCommandDispatcher().process((CommandSource) player, command);
 
     }
 
